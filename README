@@ -1,0 +1,77 @@
+###########################################################
+# CorZu - the Coreference Resolver for German from Zurich #
+# contact: don.tuggener@gmail.com                         #
+###########################################################
+
+Web: http://www.cl.uzh.ch/de/research/completed-research/coreferenceresolution.html
+
+This is the implementation of the incremental coreference resolution system for German described in: 
+Tuggener, Don (2016). Incremental coreference resolution for German. PhD Thesis, University of Zürich.
+
+The input for the coreference system is a dependency parsed German document in the CoNLL format (see examples/example_input.txt and examples/example_input.txt.parzu).
+The final output is the content of the CoNLL formated parsed file with the coreference information added as the last column.
+
+LICENSE
+=======
+If you use the mensch.txt file (see INSTALLATION, ADDITIONAL FILES), write an email to erhard.hinrichs@uni-tuebingen.de. Usage of the file for academic purposes is free (you still need to inform Erhard Hinrichs; a short email suffices). If you plan to use the file in a non-academic and/or commercial setting, you have to discuss the details with Erhard Hinrichs.
+For all other items, see gpl-2.0.txt.
+
+REQUIREMENTS
+============
+The system is implemented in Python and was developed and tested under Debian and Ubuntu Linux, but it should work under other environments which have Python installed (no guarantee).
+The system was developed around the ParZu parser (https://github.com/rsennrich/ParZu), but should work with other parsers which output CoNLL format identical to ParZu (see examples/example_input.txt.parzu). We recommend that you use ParZu, however. Make sure you have a running version that is able to produce the format shown in the examples directory (examples/example_input.txt.parzu). 
+
+INSTALLATION
+============
+Just unzip:
+unzip CorZu_v2.0.zip
+If you want to use the mensch.txt file (recommended), unzip it as well and see LICENSE for conditions.
+
+USAGE
+=====
+A shell script is included to perform all the neccessary steps on raw text files. Usage:
+./corzu.sh input_text.txt
+This will create all output files. 
+IMPORTANT: You need to set the absolute path where CorZu lies and the ParZu command by editing the corzu.sh file.
+
+STEP BY STEP USAGE
+==================
+We will discuss usage based on the files in the examples/ directory and assume that ParZu is installed in: /your/parzu_directory/
+Change directory to the CorZu directory, i.e.:
+cd CorZu_v2.0
+
+1. First, an input text needs to be parsed by ParZu, e.g.:
+cat examples/example_input.txt | python /your/parzu_directory/parzu > examples/example_input.txt.parzu
+
+The parser will output some status messages (like "Starting tokenizer").
+The '-q' flag can be set in order to suppress the output of such messages.
+If the parser does not output CoNLL format as default, you need to add the flag '-o conll', i.e.:
+cat examples/example_input.txt | python /your/parzu_directory/parzu -q -o conll > examples/example_input.txt
+
+ParZu writes to standard out, and we redirect the output to the file examples/parsed.conll
+
+2. Next, we need to extract the potentially corefering NPs (markables) from the parser. E.g.:
+python extract_mables_from_conll.py examples/example_input.txt > examples/example_input.mables
+
+We store the markables in a file for inspection purposes, i.e. error analysis.
+
+3. We now run the coreference resolver, i.e.:
+python corzu.py examples/example_input.txt.mables examples/example_input.txt.parzu examples/example_input.txt.coref
+The first argument needs to be the extracted markables file from step 2. 
+The second argument is the parzu output file from step 1. It will be used to create the CoNLL format output file containing the coreference annotation.
+The third argument is the output file, i.e. the conll file where the coreference information is added as the last column.
+
+4. Optionally: Convert the conll formated output to more reader-friendly HTML, i.e.:
+python conll_to_html.py examples/example_input.txt.coref > examples/example_input.txt.html
+This file can then be viewed in a web browser.
+
+ADDITIONAL FILES
+================
+Additional files in the CorZu directory:
+get_subcat_frame.py     is used by extract_mables_from_conll.py to extract the verbs governing the markables.
+verbadicendi.py         is used by corzu.py to find markables governed by verbs denoting some notion of speaking and which might therefore be good antecedent candidates for 1st person pronouns.
+female_names.txt    A list of female first names collected from the internet. Used by extract_mables_from_parzu.py to disambiguate gender of named entities.
+male_names.txt      Same as the above, but containing male names.
+mensch.txt(.zip)    Common nouns that are listed below the Synset "Mensch" in GermaNet. extract_mables_from_parzu.py uses this to identify the animacy of markables. If you use this file, write an email to the GermaNet team (see LICENSE below). (Usage of the file is recommended as it improves pronoun resolution a bit. However, it is not necessary for the system to run.)
+
+
