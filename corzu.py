@@ -104,6 +104,9 @@ if verb_postfilter!='off' or verb_postfilter_context_w2v or verb_postfilter_cont
     import graph_access as graph  
     from scipy.spatial.distance import cosine
     from scipy.sparse import csr_matrix     
+
+# make script work from arbitrary directory
+corzu_dir = os.path.dirname(os.path.realpath(__file__))
   
 # ============================================= #        
 
@@ -1512,8 +1515,8 @@ def main(file1,file2='',file3=''):
         
         if classifier=='mle':
             global weights_global
-            if preprocessing=='gold': weights_global=eval(open('mle_weights_tmp','r').read())
-            if preprocessing=='real': weights_global=eval(open('mle_weights_real','r').read())
+            if preprocessing=='gold': weights_global=eval(open(corzu_dir + os.sep + 'mle_weights_tmp','r').read())
+            if preprocessing=='real': weights_global=eval(open(corzu_dir + os.sep + 'mle_weights_real','r').read())
             global raw_counts_twin_features            
             raw_counts_twin_features={}
             

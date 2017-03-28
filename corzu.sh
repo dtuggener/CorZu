@@ -1,6 +1,10 @@
 #!/bin/sh
 
-corzu_dir="/home/user/tuggener/hex_storage/CorZu_v2.0"  #adjust this to your CorZu directory
+# Absolute path to this script, e.g. /home/user/bin/foo.sh
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+corzu_dir=$(dirname "$SCRIPT")
+
 parzu_cmd="parzu -q"   #the command used for starting parzu
 
 echo "Parsing ..."
