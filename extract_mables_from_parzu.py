@@ -14,6 +14,9 @@ global align_gold_boundaries, real_preprocessing
 align_gold_boundaries=False                             #align extracted markables to gold mention boundaries
 real_preprocessing=True                                 #switch for gold morphology
 
+# make script work from arbitrary directory
+corzu_dir = os.path.dirname(os.path.realpath(__file__))
+
 """ functions """
 def nn_str_matching(ante,anaph):    
     """ string matching for common nouns; return True/False """
@@ -307,12 +310,12 @@ male_names=eval(open(path+'data/male_names.txt','r').read())      #male first na
 female_names=eval(open(path+'data/female_names.txt','r').read())  #female first names
 """
 
-if os.path.isfile('mensch.txt'): person=eval(open('mensch.txt','r').read())  #Person descriptions extracted from Germanet 7 nomen.Mensch.xml
+if os.path.isfile(corzu_dir + os.sep + 'mensch.txt'): person=eval(open(corzu_dir + os.sep + 'mensch.txt','r').read())  #Person descriptions extracted from Germanet 7 nomen.Mensch.xml
 else: 
     print >> sys.stderr,'Not using mensch.txt; consider using it for improved pronoun resolution performance (see README).'
     person=[]
-male_names=eval(open('male_names.txt','r').read())      #male first names, used for gender disambiguation of named entities
-female_names=eval(open('female_names.txt','r').read())  #female first names
+male_names=eval(open(corzu_dir + os.sep + 'male_names.txt','r').read())      #male first names, used for gender disambiguation of named entities
+female_names=eval(open(corzu_dir + os.sep + 'female_names.txt','r').read())  #female first names
 
 doc_counter=0
 
