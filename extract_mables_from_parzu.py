@@ -563,7 +563,7 @@ for line in open(sys.argv[1],'r').readlines():
                             #maybe: if the tok is NN and sing, require determiner?
                             koord_head=next(k for k in sentence if k[0]==und[6] and k[4] in ['NN','NE'])   #the coordination head is a noun
                             if len(mables)>2:
-                                if koord_head[2]==mables[-2][8]:
+                                if koord_head[2]==mables[-2][8] and sent_nr == mables[-2][0]:
                                     koord=copy.deepcopy(mables[-2]) #copy the coordination head                                   
                                     koord[2]=int(mable[2])   #extension
                                     koord[5]='*'    #gender
@@ -574,7 +574,7 @@ for line in open(sys.argv[1],'r').readlines():
                                     koord[11].append('und')
                                     koord[11]+=list(mable[11])
                                     koords.append(koord)      
-                                elif koord_head[2]==mables[-3][8]:    
+                                elif koord_head[2]==mables[-3][8] and sent_nr == mables[-3][0]:    
                                     koord=copy.deepcopy(mables[-3]) #copy the coordination head
                                     koord[2]=int(mable[2])   #extension
                                     koord[5]='*'    #gender
@@ -583,7 +583,7 @@ for line in open(sys.argv[1],'r').readlines():
                                     koord[8]=koord[8]+' und '+str(mable[8]) #head string: Detlev und Karin                                                    
                                     koord[11].append('und')
                                     koord[11]+=list(mable[11])
-                                    koords.append(koord)         
+                                    koords.append(koord)      
                         except StopIteration: True                                      
       
 
@@ -622,15 +622,12 @@ for line in open(sys.argv[1],'r').readlines():
                     
 
 """ output """
-            
 print 'docid= 1'
-
 if not koords==[]:
     mables+=koords  #include coordinated nps
 mables.sort()                                           #sort by sentence number and markable extension
 mables2=[]                                              #final markable list (some transformation below)
 mable_nr=0                                              #markable id counter
-
                 
 #some transformations in the markable feature vectors
 for m in mables:
